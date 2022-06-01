@@ -187,6 +187,15 @@
         socket.emit('message',message)
         document.getElementById('message').value = '';
     }
+    
+    let elem =  document.getElementById('message')
+    elem.addEventListener("keypress", (event)=> {
+    if (event.keyCode === 13) { // key code of the keybord key
+      event.preventDefault();
+      sendMessage();
+	 // your code to Run
+    }
+  });
 </script>
 </body>
 
