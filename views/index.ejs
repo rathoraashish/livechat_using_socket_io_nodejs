@@ -33,7 +33,8 @@
 <div class="chat-screen">
     <div class="chat-header">
         <div class="chat-header-title">
-            Let’s chat? - We're online
+           <div>Let’s chat? - We're online</div>
+           <div id="socket-id"></div>
         </div>
         <div class="chat-header-option hide">
             <span class="dropdown custom-dropdown">
@@ -86,7 +87,7 @@
         </div>
     </div>
     <div class="chat-body hide" id="chats">
-        <div class="chat-start">Monday, 1:27 PM</div>
+        <div class="chat-start" id="chat-time">Monday, 1:27 PM</div>
         <div class="chat-bubble you">Welcome to our site, if you need help simply reply to this message, we are online and ready to help.</div>
         <div class="chat-bubble me">Hi, I am back</div>
         <!-- <div class="chat-bubble you">
@@ -135,6 +136,7 @@
 <script src="/js/popper.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/select2.min.js"></script>
+<script src="/js/custom.js"></script>
  <script>
         $(document).ready(function(){
             $(".select2_el").select2({
@@ -165,7 +167,10 @@
 </script>
 <script>
     const socket = io('http://localhost:3001')
-    socket.on('connection')
+
+    socket.on('connect',() => {
+        displayID(`Your chat id: ${socket.id}`)
+    })
 
     socket.on('message',(data)=>{
         var tag = document.createElement("div");
@@ -190,13 +195,20 @@
     
     let elem =  document.getElementById('message')
     elem.addEventListener("keypress", (event)=> {
-    if (event.keyCode === 13) { // key code of the keybord key
-      event.preventDefault();
-      sendMessage();
-	 // your code to Run
+        if (event.keyCode === 13) { // key code of the keybord key
+        event.preventDefault();
+        sendMessage();
+        // your code to Run
+        }
+    });
+
+    displayID = (message) => {
+        document.getElementById('socket-id').textContent = message;
     }
-  });
+</script>
+<script>
+    let datetime = formatAMPM(new Date);
+    document.getElementById("chat-time").textContent = datetime;
 </script>
 </body>
-
 </html>
