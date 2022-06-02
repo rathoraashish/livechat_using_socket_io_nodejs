@@ -57,29 +57,18 @@
     <div class="chat-mail">
         <div class="row">
             <div class="col-md-12 text-center mb-2">
-                <p>Hi 👋! Please fill out the form below to start chatting with the next available agent.</p>
+                <p>Hi 👋! Please enter your friend chat id to chat with him/her.</p>
+                <p>If you leave it blank then your chat will be broadcasted to everyone</p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Name">
+                    <input type="text" id="room-id" class="form-control" placeholder="Enter chat id">
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Email">
-                </div>
-            </div>
-            <div class="col-md-12">
-                    <select class="form-control  select2_el">
-                        <option selected="selected">Select Option</option>
-                        <option>Report Abuse</option>
-                        <option>Other</option>
-                    </select>
-            </div>
-            <div class="col-md-12">
-                <button class="btn btn-primary btn-rounded btn-block">Start Chat</button>
+                <button class="btn btn-primary btn-rounded btn-block" id="enter-room-btn" onclick="getRoomId()">Enter Chat</button>
             </div>
            <div class="col-md-12">
                <div class="powered-by">By Ashish Rathore</div>
@@ -168,6 +157,11 @@
 <script>
     const socket = io('http://localhost:3001')
 
+    getRoomId = () => {
+        const room = document.getElementById('room-id').value;
+        return room;
+    }
+
     socket.on('connect',() => {
         displayID(`Your chat id: ${socket.id}`)
     })
@@ -189,7 +183,9 @@
         tag.appendChild(text);
         document.getElementById('chats').appendChild(tag);
         
-        socket.emit('message',message)
+        const room = getRoomId();
+        console.log("room id",room)
+        socket.emit('message',message,room)
         document.getElementById('message').value = '';
     }
     
@@ -205,6 +201,7 @@
     displayID = (message) => {
         document.getElementById('socket-id').textContent = message;
     }
+
 </script>
 <script>
     let datetime = formatAMPM(new Date);
