@@ -25,7 +25,12 @@ server.listen(3001,()=>{
 io.on("connection",(socket)=>{
     console.log("Socket id is: ",socket.id)
 
-    socket.on('message',(data) => {
-        socket.broadcast.emit('message',data)
+    socket.on('message',(data,room) => {
+        console.log("This is room id",room);
+        if(room === ''){
+            socket.broadcast.emit('message',data)     
+        }else{
+            socket.to(room).emit('message',data);
+        }
     })
 })
