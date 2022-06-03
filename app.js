@@ -25,8 +25,16 @@ server.listen(3001,()=>{
 io.on("connection",(socket)=>{
     console.log("Socket id is: ",socket.id)
 
+    socket.on('connected-to',(data,room)=>{
+        if(data == ''){
+            socket.to(room).emit('connected-to-message',`You are connected to anonymous`)
+        }else{
+            socket.to(room).emit('connected-to-message',`You are connected to ${data}`)
+        }
+    })
+
     socket.on('message',(data,room) => {
-        console.log("This is room id",room);
+        console.log("This is room data",room);
         if(room === ''){
             socket.broadcast.emit('message',data)     
         }else{

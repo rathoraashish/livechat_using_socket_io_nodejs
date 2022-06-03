@@ -64,6 +64,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
+                    <input type="text" id="user-name" class="form-control" placeholder="Enter your name">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
                     <input type="text" id="room-id" class="form-control" placeholder="Enter chat id">
                 </div>
             </div>
@@ -76,9 +81,9 @@
         </div>
     </div>
     <div class="chat-body hide" id="chats">
-        <div class="chat-start" id="chat-time">Monday, 1:27 PM</div>
+        <div class="chat-start" id="connected-to"></div>
+        <!-- <div class="chat-start" id="chat-time">Monday, 1:27 PM</div> -->
         <div class="chat-bubble you">Welcome to our site, if you need help simply reply to this message, we are online and ready to help.</div>
-        <div class="chat-bubble me">Hi, I am back</div>
         <!-- <div class="chat-bubble you">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto;display: block;shape-rendering: auto;width: 43px;height: 20px;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                 <circle cx="0" cy="44.1678" r="15" fill="#ffffff">
@@ -155,17 +160,28 @@
     });
 </script>
 <script>
+    //create socket on client side
     const socket = io('http://localhost:3001')
 
+    //get room id and send the connected to name to server
     getRoomId = () => {
         const room = document.getElementById('room-id').value;
+        let connectedTo = document.getElementById('user-name').value;
+        socket.emit('connected-to',connectedTo,room)
         return room;
     }
 
+    //display your connection id on your screen
     socket.on('connect',() => {
         displayID(`Your chat id: ${socket.id}`)
     })
 
+    //get and display conncted to name to user
+    socket.on('connected-to-message',(data)=>{
+        document.getElementById('connected-to').textContent = data
+    })
+
+    //get your friends message and display to your screen
     socket.on('message',(data)=>{
         var tag = document.createElement("div");
         tag.setAttribute('class','chat-bubble you')
@@ -175,6 +191,7 @@
         document.getElementById('message').value = '';
     })
 
+    //send your message to your friend
     let sendMessage = () => {
         let message =  document.getElementById('message').value
         var tag = document.createElement("div");
@@ -189,6 +206,7 @@
         document.getElementById('message').value = '';
     }
     
+    //send messages on "Enter" button press
     let elem =  document.getElementById('message')
     elem.addEventListener("keypress", (event)=> {
         if (event.keyCode === 13) { // key code of the keybord key
@@ -198,14 +216,15 @@
         }
     });
 
+    //function to display socket id
     displayID = (message) => {
         document.getElementById('socket-id').textContent = message;
     }
 
 </script>
-<script>
+<!-- <script>
     let datetime = formatAMPM(new Date);
     document.getElementById("chat-time").textContent = datetime;
-</script>
+</script> -->
 </body>
 </html>
